@@ -1,0 +1,92 @@
+require('dotenv').config();
+
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const hpp = require('hpp');
+const pinoHttp = require('pino-http');
+const cookieParser = require('cookie-parser');
+const { v4: uuidv4 } = require('uuid');
+
+const { corsOrigins, apiPrefix } = require('./config/env');
+const logger = require('./config/logger');
+const routes = require('./routes');
+const { globalLimiter } = require('./middleware/rateLimiters');
+const sanitizeInput = require('./middleware/sanitize');
+const errorHandler = require('./middleware/errorHandler');
+const notFound = require('./middleware/notFound');
+
+const app = express();
+
+// Trust reverse proxy (needed for rate-limit IP detection)
+app.set('trust proxy', 1);
+
+// Attach request ID to every request
+app.use((req, res, next) => {
+  req.id = req.headers['x-request-id'] || uuidv4();
+  res.setHeader('x-request-id', req.id);
+  next();
+});
+
+// Security headers
+app.use(helmet());
+
+// CORS
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (corsOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-request-id'],
+  }),
+);
+
+// Body parsing
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(cookieParser());
+
+// Security: HTTP parameter pollution
+app.use(hpp());
+
+// Input sanitization
+app.use(sanitizeInput);
+
+// HTTP request logging (skip health/ready endpoints to reduce noise)
+app.use(
+  pinoHttp({
+    logger,
+    autoLogging: {
+      ignore: (req) => req.url === `${apiPrefix}/health` || req.url === `${apiPrefix}/ready`,
+    },
+    customLogLevel: (_req, res) => {
+      if (res.statusCode >= 500) return 'error';
+      if (res.statusCode >= 400) return 'warn';
+      return 'info';
+    },
+    serializers: {
+      req: (req) => ({ id: req.id, method: req.method, url: req.url }),
+      res: (res) => ({ statusCode: res.statusCode }),
+    },
+  }),
+);
+
+// Global rate limiter
+app.use(apiPrefix, globalLimiter);
+
+// API routes
+app.use(apiPrefix, routes);
+
+// 404 handler (must be before errorHandler)
+app.use(notFound);
+
+// Centralized error handler
+app.use(errorHandler);
+
+module.exports = app;
+
