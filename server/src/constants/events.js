@@ -1,5 +1,5 @@
 module.exports = {
-  // Client → Server
+  // ─── Client → Server ───────────────────────────────────────────────────────
   BOARD_JOIN: 'board:join',
   BOARD_LEAVE: 'board:leave',
   CARD_MOVE: 'card:move',
@@ -8,24 +8,45 @@ module.exports = {
   LIST_MOVE: 'list:move',
   LIST_CREATE: 'list:create',
   LIST_UPDATE: 'list:update',
-  CARD_TYPING: 'card:typing',
+  CARD_COMMENT_TYPING: 'card:comment:typing',
+  CARD_COMMENT_STOP_TYPING: 'card:comment:stop-typing',
+  CARD_DRAG_START: 'card:drag:start',
+  CARD_DRAG_END: 'card:drag:end',
 
-  // Server → Client
-  CARD_MOVED: 'card:moved',
-  CARD_CREATED: 'card:created',
-  CARD_UPDATED: 'card:updated',
-  CARD_DELETED: 'card:deleted',
-  CARD_ARCHIVED: 'card:archived',
+  // ─── Server → Client ───────────────────────────────────────────────────────
+  BOARD_JOINED: 'board:joined',
+  BOARD_LEFT: 'board:left',
+  BOARD_UPDATED: 'board:updated',
+  BOARD_ARCHIVED: 'board:archived',
+  BOARD_DELETED: 'board:deleted',
+
   LIST_CREATED: 'list:created',
   LIST_UPDATED: 'list:updated',
   LIST_MOVED: 'list:moved',
   LIST_DELETED: 'list:deleted',
+  LIST_ARCHIVED: 'list:archived',
   LIST_REBALANCED: 'list:rebalanced',
-  BOARD_UPDATED: 'board:updated',
-  BOARD_ARCHIVED: 'board:archived',
+
+  CARD_CREATED: 'card:created',
+  CARD_UPDATED: 'card:updated',
+  CARD_MOVED: 'card:moved',
+  CARD_DELETED: 'card:deleted',
+  CARD_ARCHIVED: 'card:archived',
+  CARD_MEMBER_ADDED: 'card:member:added',
+  CARD_MEMBER_REMOVED: 'card:member:removed',
+  CARD_LABEL_ADDED: 'card:label:added',
+  CARD_LABEL_REMOVED: 'card:label:removed',
+  CARD_COMMENT_CREATED: 'card:comment:created',
+  CARD_COMMENT_UPDATED: 'card:comment:updated',
+  CARD_COMMENT_DELETED: 'card:comment:deleted',
+  CHECKLIST_CREATED: 'checklist:created',
+  CHECKLIST_UPDATED: 'checklist:updated',
+  CHECKLIST_DELETED: 'checklist:deleted',
+  CHECKLIST_ITEM_UPDATED: 'checklist:item:updated',
+
   PRESENCE_UPDATE: 'presence:update',
   NOTIFICATION_NEW: 'notification:new',
   SESSION_REVOKED: 'session:revoked',
   MEMBER_REMOVED: 'member:removed',
+  ERROR: 'error',
 };
-
