@@ -82,11 +82,30 @@ app.use(apiPrefix, globalLimiter);
 // API routes
 app.use(apiPrefix, routes);
 
+// GraphQL endpoint — mounted async during server startup via initGraphQL()
+// (see server.js for mounting logic)
+
 // 404 handler (must be before errorHandler)
 app.use(notFound);
 
 // Centralized error handler
 app.use(errorHandler);
+
+/**
+ * Mount the GraphQL middleware after Apollo Server has started.
+ * Called from server.js after http server creation.
+ */
+app.initGraphQL = async function () {
+  try {
+    const createGraphQLMiddleware = require('./graphql');
+    const gqlMiddleware = await createGraphQLMiddleware();
+    // Mount before 404 handler — insert just before notFound
+    app.use('/graphql', express.json(), gqlMiddleware);
+    logger.info('GraphQL endpoint ready at /graphql');
+  } catch (err) {
+    logger.error({ err }, 'Failed to initialize GraphQL');
+  }
+};
 
 module.exports = app;
 
