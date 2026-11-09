@@ -7,6 +7,7 @@ const cardRoutes = require('./card.routes');
 const checklistRoutes = require('./checklist.routes');
 const labelRoutes = require('./label.routes');
 const commentRoutes = require('./comment.routes');
+const attachmentRoutes = require('./attachment.routes');
 
 const router = Router();
 
@@ -55,6 +56,8 @@ router.use('/lists/:listId/cards', (req, _res, next) => {
 router.use('/cards', cardRoutes);
 router.use('/cards/:cardId/checklists', checklistRoutes);
 router.use('/cards/:cardId/comments', commentRoutes);
+router.use('/cards/:cardId/attachments', attachmentRoutes);
+router.use('/attachments', attachmentRoutes);
 
 module.exports = router;
 

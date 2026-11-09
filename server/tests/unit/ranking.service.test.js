@@ -129,3 +129,4 @@ describe('Ranking Service — calculateMovePosition', () => {
     expect(shouldRebalance).toBe(false);
   });
 });
+

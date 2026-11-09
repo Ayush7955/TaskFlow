@@ -19,3 +19,4 @@ module.exports = function listHandler(io, socket) {
     socket.to(`board:${boardId}`).emit(EVENTS.CARD_DRAG_END, { cardId });
   });
 };
+
