@@ -7,11 +7,12 @@ const schema = Joi.object({
   CLIENT_URL: Joi.string().default('http://localhost:5173'),
   CORS_ORIGINS: Joi.string().default('http://localhost:5173'),
 
-  DB_HOST: Joi.string().required(),
+  DB_DIALECT: Joi.string().valid('mysql', 'sqlite').default('sqlite'),
+  DB_HOST: Joi.string().default('127.0.0.1'),
   DB_PORT: Joi.number().default(3306),
-  DB_NAME: Joi.string().required(),
-  DB_USER: Joi.string().required(),
-  DB_PASSWORD: Joi.string().required(),
+  DB_NAME: Joi.string().default('p16_taskmanager'),
+  DB_USER: Joi.string().default('root'),
+  DB_PASSWORD: Joi.string().allow('').default('changeme'),
   DB_POOL_MAX: Joi.number().default(10),
   DB_LOGGING: Joi.boolean().default(false),
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { MoreHorizontal, UserPlus, Filter, Eye, EyeOff, Trash2, Pencil } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { MoreHorizontal, UserPlus, Filter, Eye, EyeOff, Trash2, Pencil, ArrowLeft } from 'lucide-react';
 import useBoardStore from '../../stores/boardStore';
 import Avatar from '../../components/Avatar';
 import Badge from '../../components/Badge';
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast';
 import api from '../../utils/api';
 
 export default function BoardHeader() {
+  const navigate = useNavigate();
   const { currentBoard, members } = useBoardStore();
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(currentBoard?.name || '');
@@ -56,6 +58,17 @@ export default function BoardHeader() {
 
   return (
     <div className="flex items-center gap-4 px-6 py-3 bg-surface border-b border-border">
+      {/* Back button */}
+      <button
+        onClick={() => navigate('/boards')}
+        className="flex items-center gap-1.5 text-xs font-body font-medium text-secondary hover:text-ink px-2.5 py-1.5 rounded-lg hover:bg-stone-100 transition-colors shrink-0"
+        title="Back to all boards"
+      >
+        <ArrowLeft size={16} />
+        <span>Boards</span>
+      </button>
+      <div className="h-4 w-px bg-border shrink-0" />
+
       {/* Title */}
       <div className="flex-1 min-w-0">
         {editing ? (

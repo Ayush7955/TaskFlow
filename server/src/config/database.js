@@ -1,9 +1,19 @@
 require('dotenv').config();
+const path = require('path');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const dbName = process.env.DB_NAME || 'p16_taskmanager';
+const dialect = process.env.DB_DIALECT || 'sqlite';
 
-const base = {
+const base = dialect === 'sqlite' ? {
+  dialect: 'sqlite',
+  storage: process.env.DB_STORAGE || path.resolve(__dirname, '../../dev.sqlite'),
+  logging: process.env.DB_LOGGING === 'true' ? console.log : false,
+  define: {
+    underscored: true,
+    timestamps: true,
+  },
+} : {
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'changeme',
   host: process.env.DB_HOST || '127.0.0.1',
@@ -25,7 +35,6 @@ const base = {
     underscored: true,
     timestamps: true,
     charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci',
   },
 };
 

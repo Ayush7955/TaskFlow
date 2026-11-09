@@ -14,6 +14,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleDemoSignIn = async () => {
+    setIsSubmitting(true);
+    try {
+      await login('alice@taskflow.dev', 'Password123!');
+      toast.success('Logged in as Alice (Acme Corp)');
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      toast.error('Failed to log in with demo account');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,7 +73,30 @@ export default function LoginPage() {
           Sign in to your workspace
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        {/* 1-Click Demo Login Banner */}
+        <div className="mt-6 p-4 rounded-xl bg-stone-50 border border-border">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-ink font-body">Demo Workspace (Acme Corp)</p>
+              <p className="text-[11px] text-secondary font-body mt-0.5">8 boards, 68+ tasks, team members & checklists</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleDemoSignIn}
+              disabled={isSubmitting}
+              className="px-3.5 py-1.5 text-xs font-body font-medium bg-ink text-canvas rounded-pill hover:bg-stone-800 transition-colors shadow-xs shrink-0"
+            >
+              Demo Sign In →
+            </button>
+          </div>
+        </div>
+
+        <div className="relative my-6 text-center">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
+          <span className="relative bg-surface px-3 text-xs text-muted font-body">or continue with credentials</span>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label="Email"
             type="email"

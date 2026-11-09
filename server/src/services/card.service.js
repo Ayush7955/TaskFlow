@@ -91,7 +91,7 @@ class CardService {
         {
           model: Label,
           as: 'labels',
-          attributes: ['public_id', 'name', 'color'],
+          attributes: ['id', 'name', 'color'],
           through: { attributes: [] },
         },
       ],
@@ -145,7 +145,7 @@ class CardService {
               {
                 model: Label,
                 as: 'labels',
-                attributes: ['public_id', 'name', 'color'],
+                attributes: ['id', 'name', 'color'],
                 through: { attributes: [] },
               },
             ],
@@ -201,7 +201,7 @@ class CardService {
         {
           model: Label,
           as: 'labels',
-          attributes: ['public_id', 'name', 'color'],
+          attributes: ['id', 'name', 'color'],
           through: { attributes: [] },
         },
         {

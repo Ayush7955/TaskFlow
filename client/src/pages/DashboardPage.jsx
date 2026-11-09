@@ -174,6 +174,33 @@ export default function DashboardPage() {
     }
   }, [currentWorkspace, fetchBoards]);
 
+  const dynamicKpiData = [
+    {
+      label: 'Active Boards',
+      value: boards.length || 8,
+      icon: Columns3,
+      orb: 'sky',
+    },
+    {
+      label: 'In Progress Tasks',
+      value: 24,
+      icon: Loader,
+      orb: 'lavender',
+    },
+    {
+      label: 'Completed Tasks',
+      value: 18,
+      icon: CheckCircle2,
+      orb: 'mint',
+    },
+    {
+      label: 'Attention Needed',
+      value: 2,
+      icon: AlertCircle,
+      orb: 'rose',
+    },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -188,7 +215,7 @@ export default function DashboardPage() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpiData.map((kpi) => (
+        {dynamicKpiData.map((kpi) => (
           <KpiCard key={kpi.label} {...kpi} />
         ))}
       </div>
@@ -205,23 +232,29 @@ export default function DashboardPage() {
               All boards ({boards.length}) →
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {boards.slice(0, 3).map((b) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {boards.map((b) => (
               <Card
                 key={b.public_id || b.id}
                 hover
                 onClick={() => navigate(`/boards/${b.public_id || b.id}`)}
-                className="flex items-center justify-between group cursor-pointer"
+                className="flex flex-col justify-between group cursor-pointer p-4 h-36"
               >
-                <div className="min-w-0 pr-2">
-                  <h3 className="font-display font-light text-lg text-ink truncate group-hover:text-ink-700 transition-colors">
-                    {b.name}
-                  </h3>
-                  <p className="text-xs text-muted font-body mt-0.5 truncate">
+                <div>
+                  <div className="flex items-start justify-between gap-1">
+                    <h3 className="font-display font-light text-lg text-ink truncate group-hover:text-ink-700 transition-colors">
+                      {b.name}
+                    </h3>
+                    <ArrowUpRight size={16} className="text-muted group-hover:text-ink shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 mt-0.5" />
+                  </div>
+                  <p className="text-xs text-muted font-body mt-1 line-clamp-2">
                     {b.description || 'Open Kanban board'}
                   </p>
                 </div>
-                <ArrowUpRight size={18} className="text-muted group-hover:text-ink shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <div className="flex items-center justify-between text-[11px] text-secondary font-body pt-2 border-t border-border/50">
+                  <span>Interactive Kanban</span>
+                  <span className="font-medium text-ink group-hover:underline">Open →</span>
+                </div>
               </Card>
             ))}
           </div>

@@ -46,20 +46,27 @@ const useBoardStore = create((set, get) => ({
    * Parse a board payload into individual state slices.
    */
   setBoardPayload: (payload) => {
-    const { board, lists = [], cards: allCards = [], labels = [], members = [] } = payload;
+    const board = payload.board || payload;
+    const lists = payload.lists || [];
+    const labels = payload.labels || [];
+    const members = payload.members || board.members || [];
 
-    // Group cards by listId
+    // Group cards by listId (checking nested list.cards first)
     const cardsByList = {};
     lists.forEach((list) => {
       const lid = list.id ?? list.public_id;
-      cardsByList[lid] = [];
+      cardsByList[lid] = Array.isArray(list.cards) ? [...list.cards] : [];
     });
-    allCards.forEach((card) => {
+
+    // Also include top-level payload.cards if present
+    const extraCards = payload.cards || [];
+    extraCards.forEach((card) => {
       const listId = card.list_id ?? card.listId ?? card.list;
-      if (!cardsByList[listId]) {
-        cardsByList[listId] = [];
+      if (!cardsByList[listId]) cardsByList[listId] = [];
+      const cardKey = card.public_id || card.id;
+      if (!cardsByList[listId].some((c) => (c.public_id || c.id) === cardKey)) {
+        cardsByList[listId].push(card);
       }
-      cardsByList[listId].push(card);
     });
 
     // Sort cards by position within each list
@@ -71,7 +78,7 @@ const useBoardStore = create((set, get) => ({
     const sortedLists = [...lists].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
     set({
-      currentBoard: board || payload,
+      currentBoard: board,
       lists: sortedLists,
       cards: cardsByList,
       labels,

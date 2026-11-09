@@ -13,8 +13,14 @@ import Spinner from '../components/Spinner';
 export default function BoardListPage() {
   const navigate = useNavigate();
   const { boards, isLoading, fetchBoards } = useBoardStore();
-  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const { currentWorkspace, workspaces, fetchWorkspaces } = useWorkspaceStore();
   const workspaceId = currentWorkspace?.public_id || currentWorkspace?.id;
+
+  useEffect(() => {
+    if (!workspaceId && workspaces.length === 0) {
+      fetchWorkspaces();
+    }
+  }, [workspaceId, workspaces.length, fetchWorkspaces]);
 
   useEffect(() => {
     if (workspaceId) {
