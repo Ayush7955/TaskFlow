@@ -8,6 +8,8 @@ const checklistRoutes = require('./checklist.routes');
 const labelRoutes = require('./label.routes');
 const commentRoutes = require('./comment.routes');
 const attachmentRoutes = require('./attachment.routes');
+const memberRoutes = require('./member.routes');
+const userRoutes = require('./user.routes');
 
 const router = Router();
 
@@ -58,6 +60,15 @@ router.use('/cards/:cardId/checklists', checklistRoutes);
 router.use('/cards/:cardId/comments', commentRoutes);
 router.use('/cards/:cardId/attachments', attachmentRoutes);
 router.use('/attachments', attachmentRoutes);
+
+// User profile
+router.use('/users', userRoutes);
+
+// Workspace members + invites
+router.use('/workspaces/:workspaceId/members', memberRoutes);
+
+// Accept invite (public endpoint with auth)
+router.post('/invites/:token/accept', require('./member.routes'));
 
 module.exports = router;
 
