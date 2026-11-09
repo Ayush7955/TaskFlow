@@ -36,3 +36,4 @@ function getFirebaseAdmin() {
 }
 
 module.exports = { getFirebaseAdmin };
+

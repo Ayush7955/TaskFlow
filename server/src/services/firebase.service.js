@@ -95,3 +95,4 @@ async function saveDeviceToken(userPublicId, fcmToken) {
 }
 
 module.exports = { sendPushNotification, sendMulticastPush, saveDeviceToken };
+

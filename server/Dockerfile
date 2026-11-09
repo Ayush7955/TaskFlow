@@ -46,3 +46,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Start with dumb-init for proper PID 1 signal handling
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "src/server.js"]
+
