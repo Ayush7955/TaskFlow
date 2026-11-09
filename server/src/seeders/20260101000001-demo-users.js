@@ -111,3 +111,4 @@ module.exports = {
     console.log('[seeder] Removed demo users');
   },
 };
+

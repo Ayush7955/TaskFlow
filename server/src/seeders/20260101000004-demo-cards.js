@@ -232,3 +232,4 @@ module.exports = {
     console.log('[seeder] Removed demo cards, checklists, comments');
   },
 };
+

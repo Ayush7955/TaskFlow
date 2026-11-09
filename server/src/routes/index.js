@@ -2,6 +2,11 @@ const { Router } = require('express');
 const authRoutes = require('./auth.routes');
 const workspaceRoutes = require('./workspace.routes');
 const boardRoutes = require('./board.routes');
+const listRoutes = require('./list.routes');
+const cardRoutes = require('./card.routes');
+const checklistRoutes = require('./checklist.routes');
+const labelRoutes = require('./label.routes');
+const commentRoutes = require('./comment.routes');
 
 const router = Router();
 
@@ -30,6 +35,26 @@ router.get('/ready', (_req, res) => res.json({ success: true, data: { ready: tru
 router.use('/auth', authRoutes);
 router.use('/workspaces', workspaceRoutes);
 router.use('/boards', boardRoutes);
+
+// Board sub-resources
+router.use('/boards/:boardId/lists', listRoutes);
+router.use('/boards/:boardId/labels', labelRoutes);
+// Board full payload (lists + cards optimized)
+router.use('/boards/:boardId/payload', (req, res, next) => {
+  req.params.boardId = req.params.boardId;
+  next();
+}, require('../controllers/card.controller').getBoardPayload);
+
+// List sub-resources
+router.use('/lists/:listId/cards', (req, _res, next) => {
+  // propagate listId into card routes
+  next();
+}, cardRoutes);
+
+// Card sub-resources
+router.use('/cards', cardRoutes);
+router.use('/cards/:cardId/checklists', checklistRoutes);
+router.use('/cards/:cardId/comments', commentRoutes);
 
 module.exports = router;
 
