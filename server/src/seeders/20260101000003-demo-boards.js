@@ -209,3 +209,4 @@ module.exports = {
     console.log('[seeder] Removed demo boards, lists, labels');
   },
 };
+

@@ -354,3 +354,4 @@ CREATE INDEX idx_audit_workspace ON audit_logs(workspace_id, created_at);
 CREATE INDEX idx_audit_actor ON audit_logs(actor_id);
 CREATE INDEX idx_audit_entity ON audit_logs(entity_type, entity_id);
 ```
+

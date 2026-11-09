@@ -117,3 +117,4 @@ module.exports = {
     console.log('[seeder] Removed demo workspaces and members');
   },
 };
+

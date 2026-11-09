@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Attachment.associate = (models) => {
-    Attachment.belongsTo(models.Card, { foreignKey: 'card_id' });
-    Attachment.belongsTo(models.User, { foreignKey: 'uploaded_by', as: 'uploader' });
+    Attachment.belongsTo(models.Card, { foreignKey: 'card_id', as: 'card' });
+    Attachment.belongsTo(models.User, { foreignKey: 'uploaded_by', as: 'uploadedBy' });
   };
 
   return Attachment;

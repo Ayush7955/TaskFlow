@@ -45,3 +45,4 @@ Closes #<!-- issue number -->
 - [ ] GraphQL schema updated
 - [ ] API documentation updated
 - [ ] Breaking changes documented
+

@@ -192,3 +192,4 @@ test(board): add RBAC integration tests
 4. Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
 5. Push tag, GitHub Actions publishes Docker image + creates GitHub Release
 6. Back-merge `main` into `develop`
+

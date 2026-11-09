@@ -3,10 +3,11 @@ module.exports = (sequelize, DataTypes) => {
     'Comment',
     {
       id: { type: DataTypes.BIGINT.UNSIGNED, primaryKey: true, autoIncrement: true },
+      public_id: { type: DataTypes.CHAR(36), allowNull: false, unique: true, defaultValue: DataTypes.UUIDV4 },
       card_id: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
       user_id: { type: DataTypes.BIGINT.UNSIGNED, allowNull: true },
-      body: { type: DataTypes.TEXT, allowNull: false },
-      edited_at: { type: DataTypes.DATE, allowNull: true },
+      content: { type: DataTypes.TEXT, allowNull: false },
+      is_edited: { type: DataTypes.BOOLEAN, defaultValue: false },
       parent_id: { type: DataTypes.BIGINT.UNSIGNED, allowNull: true },
     },
     {
@@ -18,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Comment.associate = (models) => {
-    Comment.belongsTo(models.Card, { foreignKey: 'card_id' });
+    Comment.belongsTo(models.Card, { foreignKey: 'card_id', as: 'card' });
     Comment.belongsTo(models.User, { foreignKey: 'user_id', as: 'author' });
     Comment.belongsTo(models.Comment, { foreignKey: 'parent_id', as: 'parent' });
     Comment.hasMany(models.Comment, { foreignKey: 'parent_id', as: 'replies' });
@@ -26,4 +27,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Comment;
 };
-
