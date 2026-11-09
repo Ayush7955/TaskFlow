@@ -72,3 +72,4 @@ function _broadcastPresence(io, boardId) {
 
   io.to(`board:${boardId}`).emit(EVENTS.PRESENCE_UPDATE, { boardId, members: unique });
 }
+

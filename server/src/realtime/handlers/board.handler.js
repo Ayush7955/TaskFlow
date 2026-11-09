@@ -49,3 +49,4 @@ module.exports = function boardHandler(io, socket) {
     logger.debug({ userId: socket.userPublicId, boardId }, '[socket] left board room');
   });
 };
+

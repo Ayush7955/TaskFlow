@@ -3,16 +3,16 @@ module.exports = (sequelize, DataTypes) => {
     'Attachment',
     {
       id: { type: DataTypes.BIGINT.UNSIGNED, primaryKey: true, autoIncrement: true },
+      public_id: { type: DataTypes.CHAR(36), allowNull: false, unique: true, defaultValue: DataTypes.UUIDV4 },
       card_id: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
       uploaded_by: { type: DataTypes.BIGINT.UNSIGNED, allowNull: true },
+      filename: { type: DataTypes.STRING(255), allowNull: true },
       original_name: { type: DataTypes.STRING(255), allowNull: false },
       mime_type: { type: DataTypes.STRING(120), allowNull: false },
-      size_bytes: { type: DataTypes.BIGINT, allowNull: false },
-      provider: { type: DataTypes.ENUM('cloudinary', 's3'), allowNull: false },
-      storage_key: { type: DataTypes.STRING(500), allowNull: false },
-      url: { type: DataTypes.STRING(1000), allowNull: false },
-      thumbnail_url: { type: DataTypes.STRING(1000), allowNull: true },
-      is_cover: { type: DataTypes.BOOLEAN, defaultValue: false },
+      file_size: { type: DataTypes.BIGINT, allowNull: false },
+      url: { type: DataTypes.TEXT, allowNull: false },
+      provider: { type: DataTypes.STRING(50), defaultValue: 'cloudinary' },
+      provider_public_id: { type: DataTypes.STRING(255), allowNull: true },
     },
     { tableName: 'attachments', underscored: true, timestamps: true },
   );
@@ -24,4 +24,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Attachment;
 };
-

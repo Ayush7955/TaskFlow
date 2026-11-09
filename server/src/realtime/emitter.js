@@ -59,3 +59,4 @@ function emitToWorkspace(workspacePublicId, event, payload) {
 }
 
 module.exports = { emitToBoard, emitToUser, emitToWorkspace };
+
