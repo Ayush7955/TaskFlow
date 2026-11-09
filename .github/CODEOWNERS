@@ -1,0 +1,20 @@
+# Code Owners
+# Each line is a file pattern followed by one or more owners.
+
+# Global owners
+* @aadarshparnar
+
+# Server / API
+/server/ @aadarshparnar
+
+# Client / Frontend
+/client/ @aadarshparnar
+
+# CI/CD + Docker
+/.github/ @aadarshparnar
+/docker-compose*.yml @aadarshparnar
+/server/Dockerfile @aadarshparnar
+
+# Documentation
+/docs/ @aadarshparnar
+*.md @aadarshparnar
