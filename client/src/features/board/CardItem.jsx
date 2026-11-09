@@ -28,7 +28,7 @@ export default function CardItem({ card, listId, overlay }) {
         overlay ? 'shadow-elevated rotate-1 opacity-95' : 'cursor-pointer',
         isOverdue ? 'border-l-2 border-l-red-200 bg-red-50/30' : '',
       ].join(' ')}
-      onClick={() => !overlay && openCard(card.id)}
+      onClick={() => !overlay && openCard(card.public_id || card.id)}
     >
       {/* Label dots */}
       {card.labels?.length > 0 && (

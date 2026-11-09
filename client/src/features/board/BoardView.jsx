@@ -94,7 +94,10 @@ export default function BoardView() {
     >
       <div className="flex gap-4 overflow-x-auto px-6 pb-6 h-[calc(100vh-64px)] hide-scrollbar">
         {lists.map((list) => (
-          <ListColumn key={list.id} list={{ ...list, cards: cards[list.id] || [] }} />
+          <ListColumn
+            key={list.id || list.public_id}
+            list={{ ...list, cards: cards[list.id] || cards[list.public_id] || [] }}
+          />
         ))}
 
         {/* Add list */}

@@ -1,7 +1,7 @@
 'use strict';
 
 const commentService = require('../services/comment.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getAll = asyncHandler(async (req, res) => {
   const data = await commentService.findAllInCard(req.params.cardId, req.user.publicId, req.query);

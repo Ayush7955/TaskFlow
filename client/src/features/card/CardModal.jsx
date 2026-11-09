@@ -48,10 +48,12 @@ export default function CardModal() {
 
   if (!activeCardId) return null;
 
+  const cid = card?.public_id || card?.id;
+
   const saveTitle = async () => {
     if (!title.trim() || title === card?.title) { setEditingTitle(false); return; }
     try {
-      await api.patch(`/cards/${card.id}`, { title });
+      await api.patch(`/cards/${cid}`, { title });
       setCard((c) => ({ ...c, title }));
     } catch { toast.error('Failed to update title'); setTitle(card?.title || ''); }
     setEditingTitle(false);
@@ -59,7 +61,7 @@ export default function CardModal() {
 
   const saveDescription = async () => {
     try {
-      await api.patch(`/cards/${card.id}`, { description });
+      await api.patch(`/cards/${cid}`, { description });
       setCard((c) => ({ ...c, description }));
     } catch { toast.error('Failed to update description'); }
   };
@@ -68,7 +70,7 @@ export default function CardModal() {
     if (!newComment.trim()) return;
     setSubmittingComment(true);
     try {
-      const res = await api.post(`/cards/${card.id}/comments`, { content: newComment });
+      const res = await api.post(`/cards/${cid}/comments`, { content: newComment });
       const comment = res.data?.data || res.data;
       setCard((c) => ({ ...c, comments: [comment, ...(c.comments || [])] }));
       setNewComment('');
@@ -82,7 +84,7 @@ export default function CardModal() {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await api.post(`/cards/${card.id}/attachments`, formData, {
+      const res = await api.post(`/cards/${cid}/attachments`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       const att = res.data?.data || res.data;
@@ -93,7 +95,7 @@ export default function CardModal() {
 
   const deleteAttachment = async (attId) => {
     try {
-      await api.delete(`/cards/${card.id}/attachments/${attId}`);
+      await api.delete(`/cards/${cid}/attachments/${attId}`);
       setCard((c) => ({ ...c, attachments: c.attachments.filter((a) => a.id !== attId) }));
     } catch { toast.error('Failed to delete attachment'); }
   };
@@ -190,7 +192,7 @@ export default function CardModal() {
                         type="date"
                         defaultValue={card.due_date?.slice(0, 10)}
                         onChange={async (e) => {
-                          try { await api.patch(`/cards/${card.id}`, { due_date: e.target.value }); setCard((c) => ({ ...c, due_date: e.target.value })); }
+                          try { await api.patch(`/cards/${cid}`, { due_date: e.target.value }); setCard((c) => ({ ...c, due_date: e.target.value })); }
                           catch { toast.error('Failed to update due date'); }
                         }}
                         className="w-full text-sm font-body text-ink bg-stone-50 rounded-xl border border-border px-3 py-2 outline-none focus:ring-2 focus:ring-ink"
@@ -201,7 +203,7 @@ export default function CardModal() {
                       <select
                         defaultValue={card.priority || ''}
                         onChange={async (e) => {
-                          try { await api.patch(`/cards/${card.id}`, { priority: e.target.value }); }
+                          try { await api.patch(`/cards/${cid}`, { priority: e.target.value }); }
                           catch { toast.error('Failed to update priority'); }
                         }}
                         className="w-full text-sm font-body text-ink bg-stone-50 rounded-xl border border-border px-3 py-2 outline-none focus:ring-2 focus:ring-ink appearance-none"
@@ -381,7 +383,7 @@ export default function CardModal() {
                 <button
                   onClick={async () => {
                     try {
-                      await api.delete(`/cards/${card.id}`);
+                      await api.delete(`/cards/${cid}`);
                       closeCard();
                       toast.success('Card deleted');
                     } catch { toast.error('Failed to delete card'); }

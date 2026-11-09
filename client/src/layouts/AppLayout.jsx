@@ -25,9 +25,13 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const { workspaces, currentWorkspace, setCurrentWorkspace } =
+  const { workspaces, currentWorkspace, setCurrentWorkspace, fetchWorkspaces } =
     useWorkspaceStore();
   const { sidebarOpen, toggleSidebar } = useUiStore();
+
+  React.useEffect(() => {
+    fetchWorkspaces();
+  }, [fetchWorkspaces]);
 
   const handleLogout = () => {
     logout();

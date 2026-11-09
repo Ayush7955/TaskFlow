@@ -71,7 +71,7 @@ module.exports = {
     }
 
     const lists = await queryInterface.sequelize.query(
-      `SELECT id, board_id, name FROM lists`,
+      `SELECT id, board_id, title FROM lists`,
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     );
 
@@ -91,7 +91,7 @@ module.exports = {
     for (const board of boards) {
       for (const tmpl of cardTemplates) {
         const list = lists.find(
-          (l) => l.board_id === board.id && l.name === tmpl.listName
+          (l) => l.board_id === board.id && l.title === tmpl.listName
         );
         if (!list) continue;
 
@@ -112,12 +112,10 @@ module.exports = {
             priority: cardDef.priority,
             due_date: tmpl.listName !== 'Done' ? dueDate : null,
             start_date: null,
-            is_complete: isComplete,
+            is_completed: isComplete,
             is_archived: false,
             created_by: createdBy,
             cover_attachment_id: null,
-            estimated_hours: Math.floor(Math.random() * 8) + 1,
-            actual_hours: isComplete ? Math.floor(Math.random() * 8) + 1 : null,
             deleted_at: null,
             created_at: now,
             updated_at: now,
@@ -142,6 +140,7 @@ module.exports = {
       cardMembersData.push({
         card_id: card.id,
         user_id: assignee1.id,
+        assigned_at: now,
         created_at: now,
         updated_at: now,
       });

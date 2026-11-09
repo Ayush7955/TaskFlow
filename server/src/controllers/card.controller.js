@@ -1,7 +1,7 @@
 'use strict';
 
 const cardService = require('../services/card.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getAll = asyncHandler(async (req, res) => {
   const data = await cardService.findAllInList(req.params.listId, req.user.publicId, req.query);

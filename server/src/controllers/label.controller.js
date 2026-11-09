@@ -1,7 +1,7 @@
 'use strict';
 
 const labelService = require('../services/label.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getAll = asyncHandler(async (req, res) => {
   const labels = await labelService.findAllInBoard(req.params.boardId, req.user.publicId);

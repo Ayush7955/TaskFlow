@@ -1,7 +1,7 @@
 'use strict';
 
 const checklistService = require('../services/checklist.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 // Checklists
 exports.getAll = asyncHandler(async (req, res) => {

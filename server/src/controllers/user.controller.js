@@ -1,7 +1,7 @@
 'use strict';
 
 const userService = require('../services/user.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getProfile = asyncHandler(async (req, res) => {
   const user = await userService.getProfile(req.user.publicId);

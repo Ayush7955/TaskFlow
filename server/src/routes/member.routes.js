@@ -2,8 +2,8 @@
 
 const router = require('express').Router({ mergeParams: true });
 const ctrl = require('../controllers/member.controller');
-const { authenticate } = require('../middleware/authenticate');
-const { validate } = require('../middleware/validate');
+const authenticate = require('../middleware/authenticate');
+const validate = require('../middleware/validate');
 const Joi = require('joi');
 
 const inviteSchema = Joi.object({

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Calendar,
   AlertCircle,
@@ -8,6 +9,7 @@ import {
   MessageSquare,
   Plus,
   UserPlus,
+  Columns3,
 } from 'lucide-react';
 import {
   LineChart,
@@ -21,6 +23,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import useAuthStore from '../stores/authStore';
+import useWorkspaceStore from '../stores/workspaceStore';
+import useBoardStore from '../stores/boardStore';
 import Card from '../components/Card';
 import OrbDecoration from '../components/OrbDecoration';
 import Avatar from '../components/Avatar';
@@ -157,8 +161,18 @@ function KpiCard({ label, value, icon: Icon, orb }) {
 
 /* ──────────────────── Dashboard Page ──────────────────── */
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const { boards, fetchBoards } = useBoardStore();
   const displayName = user?.name?.split(' ')[0] || 'there';
+
+  React.useEffect(() => {
+    const wsId = currentWorkspace?.public_id || currentWorkspace?.id;
+    if (wsId) {
+      fetchBoards(wsId);
+    }
+  }, [currentWorkspace, fetchBoards]);
 
   return (
     <div className="space-y-8">
@@ -178,6 +192,41 @@ export default function DashboardPage() {
           <KpiCard key={kpi.label} {...kpi} />
         ))}
       </div>
+
+      {/* Active Boards direct Kanban access */}
+      {boards.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display font-light text-xl text-ink">Active Boards</h2>
+            <button
+              onClick={() => navigate('/boards')}
+              className="text-xs text-secondary hover:text-ink font-body font-medium flex items-center gap-1 transition-colors"
+            >
+              All boards ({boards.length}) →
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {boards.slice(0, 3).map((b) => (
+              <Card
+                key={b.public_id || b.id}
+                hover
+                onClick={() => navigate(`/boards/${b.public_id || b.id}`)}
+                className="flex items-center justify-between group cursor-pointer"
+              >
+                <div className="min-w-0 pr-2">
+                  <h3 className="font-display font-light text-lg text-ink truncate group-hover:text-ink-700 transition-colors">
+                    {b.name}
+                  </h3>
+                  <p className="text-xs text-muted font-body mt-0.5 truncate">
+                    {b.description || 'Open Kanban board'}
+                  </p>
+                </div>
+                <ArrowUpRight size={18} className="text-muted group-hover:text-ink shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

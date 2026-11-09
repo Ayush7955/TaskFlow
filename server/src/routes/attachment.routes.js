@@ -2,7 +2,7 @@
 
 const router = require('express').Router();
 const ctrl = require('../controllers/attachment.controller');
-const { authenticate } = require('../middleware/authenticate');
+const authenticate = require('../middleware/authenticate');
 const { upload: multerUpload, validateUpload } = require('../middleware/upload');
 const { uploadLimiter } = require('../middleware/rateLimiters');
 

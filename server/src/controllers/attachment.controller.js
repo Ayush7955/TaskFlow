@@ -1,7 +1,7 @@
 'use strict';
 
 const attachmentService = require('../services/attachment.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getAll = asyncHandler(async (req, res) => {
   const data = await attachmentService.findAllInCard(req.params.cardId, req.user.publicId);

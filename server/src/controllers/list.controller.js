@@ -1,7 +1,7 @@
 'use strict';
 
 const listService = require('../services/list.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 exports.getAll = asyncHandler(async (req, res) => {
   const data = await listService.findAllInBoard(req.params.boardId, req.user.publicId, req.query);

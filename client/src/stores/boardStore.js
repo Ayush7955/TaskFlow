@@ -20,8 +20,9 @@ const useBoardStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await api.get(`/workspaces/${workspaceId}/boards`);
-      const boards = data.data || data;
-      set({ boards: Array.isArray(boards) ? boards : [] });
+      const raw = data.data || data;
+      const boards = Array.isArray(raw) ? raw : (raw.boards || []);
+      set({ boards });
     } finally {
       set({ isLoading: false });
     }
@@ -50,10 +51,11 @@ const useBoardStore = create((set, get) => ({
     // Group cards by listId
     const cardsByList = {};
     lists.forEach((list) => {
-      cardsByList[list._id || list.id] = [];
+      const lid = list.id ?? list.public_id;
+      cardsByList[lid] = [];
     });
     allCards.forEach((card) => {
-      const listId = card.listId || card.list;
+      const listId = card.list_id ?? card.listId ?? card.list;
       if (!cardsByList[listId]) {
         cardsByList[listId] = [];
       }

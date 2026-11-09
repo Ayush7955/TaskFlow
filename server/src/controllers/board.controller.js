@@ -1,4 +1,5 @@
 const boardService = require('../services/board.service');
+const cardService = require('../services/card.service');
 const asyncHandler = require('../utils/asyncHandler');
 
 const create = asyncHandler(async (req, res) => {
@@ -12,8 +13,8 @@ const list = asyncHandler(async (req, res) => {
 });
 
 const getOne = asyncHandler(async (req, res) => {
-  const board = await boardService.findById(req.params.boardId, req.user.publicId);
-  res.json({ success: true, data: { board } });
+  const payload = await cardService.getBoardPayload(req.params.boardId, req.user.publicId);
+  res.json({ success: true, data: payload });
 });
 
 const update = asyncHandler(async (req, res) => {

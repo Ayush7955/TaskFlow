@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { User, RefreshToken, WorkspaceMember, AuditLog, sequelize } = require('../models');
+const { User, RefreshToken, Workspace, WorkspaceMember, Board, List, AuditLog, sequelize } = require('../models');
 const { hashPassword, comparePassword, sha256, randomToken } = require('../utils/hash');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const AppError = require('../utils/AppError');
@@ -37,35 +37,61 @@ const register = async ({ name, email, password }, meta = {}) => {
   if (existing) throw AppError.conflict('Email already in use');
 
   const password_hash = await hashPassword(password);
-  const emailVerifyToken = randomToken();
-  const emailVerifyTokenHash = sha256(emailVerifyToken);
 
-  const user = await sequelize.transaction(async (t) => {
-    const created = await User.create(
-      { name, email, password_hash, email_verify_token_hash: emailVerifyTokenHash },
-      { transaction: t },
-    );
-    // Note: workspace_id 0 for user-level events (no workspace context yet)
-    await AuditLog.create(
-      {
-        workspace_id: 0,
-        user_id: created.id,
-        entity_type: 'member',
-        entity_id: created.id,
-        action: 'USER_REGISTERED',
-        after: { name, email },
-        meta: { ip: meta.ip, userAgent: meta.userAgent },
-      },
-      { transaction: t },
-    );
-    return created;
-  });
+  const user = await User.create({ name, email, password_hash, is_email_verified: true });
+
+  // Auto-provision initial workspace & board for instant productivity
+  try {
+    const slug = `${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-ws-${Date.now().toString().slice(-4)}`;
+    const ws = await Workspace.create({
+      name: `${name}'s Workspace`,
+      slug,
+      owner_id: user.id,
+      plan: 'free',
+    });
+    await WorkspaceMember.create({
+      workspace_id: ws.id,
+      user_id: user.id,
+      role: 'owner',
+      joined_at: new Date(),
+    });
+    const board = await Board.create({
+      workspace_id: ws.id,
+      name: 'Project Roadmap',
+      description: 'Your primary tasks and sprint tracking',
+      created_by: user.id,
+      visibility: 'workspace',
+    });
+    const defaultLists = ['Backlog', 'In Progress', 'In Review', 'Done'];
+    for (let i = 0; i < defaultLists.length; i++) {
+      await List.create({
+        board_id: board.id,
+        title: defaultLists[i],
+        position: (i + 1) * 1000.0,
+      });
+    }
+  } catch (err) {
+    console.warn('Initial workspace auto-provisioning skipped:', err.message);
+  }
+
+  // Best-effort audit log
+  try {
+    await AuditLog.create({
+      workspace_id: 0,
+      user_id: user.id,
+      entity_type: 'member',
+      entity_id: user.id,
+      action: 'USER_REGISTERED',
+      after: { name, email },
+      meta: { ip: meta.ip, userAgent: meta.userAgent },
+    });
+  } catch (_) { /* non-fatal */ }
 
   const { accessToken, refreshToken } = buildTokenPair(user);
   await storeRefreshToken(user.id, refreshToken, meta);
 
   const safeUser = await User.findByPk(user.id);
-  return { user: safeUser, accessToken, refreshToken, emailVerifyToken };
+  return { user: safeUser, accessToken, refreshToken };
 };
 
 const login = async ({ email, password }, meta = {}) => {

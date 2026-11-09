@@ -37,6 +37,7 @@ export default function App() {
       <Route element={<PrivateRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/boards" element={<BoardListPage />} />
           <Route path="/workspaces/:workspaceId/boards" element={<BoardListPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

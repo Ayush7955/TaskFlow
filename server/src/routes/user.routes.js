@@ -2,8 +2,8 @@
 
 const router = require('express').Router();
 const ctrl = require('../controllers/user.controller');
-const { authenticate } = require('../middleware/authenticate');
-const { validate } = require('../middleware/validate');
+const authenticate = require('../middleware/authenticate');
+const validate = require('../middleware/validate');
 const Joi = require('joi');
 
 const updateProfileSchema = Joi.object({

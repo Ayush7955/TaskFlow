@@ -17,8 +17,14 @@ const useWorkspaceStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await api.get('/workspaces');
-      const workspaces = data.data || data;
-      set({ workspaces: Array.isArray(workspaces) ? workspaces : [] });
+      const raw = data.data || data;
+      const workspaces = Array.isArray(raw) ? raw : (raw.workspaces || []);
+      const current = get().currentWorkspace;
+      const matchedCurrent = current ? workspaces.find(w => (w.public_id || w.id) === (current.public_id || current.id)) : null;
+      set({ 
+        workspaces,
+        currentWorkspace: matchedCurrent || workspaces[0] || null
+      });
     } finally {
       set({ isLoading: false });
     }

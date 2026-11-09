@@ -14,7 +14,7 @@ export default function BoardListPage() {
   const navigate = useNavigate();
   const { boards, isLoading, fetchBoards } = useBoardStore();
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
-  const workspaceId = currentWorkspace?._id || currentWorkspace?.id;
+  const workspaceId = currentWorkspace?.public_id || currentWorkspace?.id;
 
   useEffect(() => {
     if (workspaceId) {
@@ -58,7 +58,7 @@ export default function BoardListPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {boards.map((board) => {
-            const boardId = board._id || board.id;
+            const boardId = board.public_id || board.id;
             const isPrivate = board.visibility === 'private';
             const membersList = board.members || [];
 

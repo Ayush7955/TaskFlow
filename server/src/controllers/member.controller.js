@@ -1,7 +1,7 @@
 'use strict';
 
 const { memberService, inviteService } = require('../services/member.service');
-const { asyncHandler } = require('../utils/asyncHandler');
+const asyncHandler = require('../utils/asyncHandler');
 
 // Members
 exports.listMembers = asyncHandler(async (req, res) => {

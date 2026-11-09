@@ -2,8 +2,8 @@
 
 const router = require('express').Router();
 const ctrl = require('../controllers/checklist.controller');
-const { authenticate } = require('../middleware/authenticate');
-const { validate } = require('../middleware/validate');
+const authenticate = require('../middleware/authenticate');
+const validate = require('../middleware/validate');
 const Joi = require('joi');
 
 const clSchema = Joi.object({ title: Joi.string().trim().min(1).max(255).required() });
