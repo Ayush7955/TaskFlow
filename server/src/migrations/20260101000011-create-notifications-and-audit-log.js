@@ -82,3 +82,4 @@ module.exports = {
     await queryInterface.dropTable('notifications');
   },
 };
+
