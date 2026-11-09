@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  mysql-test:
+    image: mysql:8.0
+    container_name: taskflow-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: taskflow_test
+      MYSQL_USER: taskflow
+      MYSQL_PASSWORD: taskflow_test_pass
+    ports:
+      - '3307:3306'
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'taskflow', '-ptaskflow_test_pass']
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 20s
+    networks:
+      - taskflow-test-network
+
+  api-test:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: builder
+    container_name: taskflow-api-test
+    command: sh -c "npx sequelize-cli db:migrate && npx jest --forceExit --detectOpenHandles --coverage"
+    env_file:
+      - ./server/.env.example
+    environment:
+      NODE_ENV: test
+      DB_HOST: mysql-test
+      DB_PORT: 3306
+      DB_NAME: taskflow_test
+      DB_USER: taskflow
+      DB_PASSWORD: taskflow_test_pass
+    depends_on:
+      mysql-test:
+        condition: service_healthy
+    volumes:
+      - ./server/coverage:/app/coverage
+    networks:
+      - taskflow-test-network
+
+networks:
+  taskflow-test-network:
+    driver: bridge

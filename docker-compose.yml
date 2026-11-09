@@ -1,0 +1,85 @@
+version: '3.9'
+
+services:
+  # ─── MySQL ──────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: taskflow-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: taskflow_dev
+      MYSQL_USER: taskflow
+      MYSQL_PASSWORD: taskflow_dev_pass
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'taskflow', '-ptaskflow_dev_pass']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - taskflow-network
+
+  # ─── API Server ──────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: production
+    container_name: taskflow-api
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./server/.env
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: taskflow_dev
+      DB_USER: taskflow
+      DB_PASSWORD: taskflow_dev_pass
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - taskflow-network
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:5000/api/v1/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Client (dev) ────────────────────────────────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: taskflow-client
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:5000/api/v1
+      VITE_SOCKET_URL: http://localhost:5000
+    depends_on:
+      - api
+    networks:
+      - taskflow-network
+    profiles:
+      - client
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  taskflow-network:
+    driver: bridge
