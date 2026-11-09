@@ -1,0 +1,17 @@
+node_modules/
+npm-debug.log*
+coverage/
+.env
+.env.*
+!.env.example
+tests/
+*.test.js
+*.spec.js
+.eslintrc*
+.prettierrc*
+nodemon.json
+.git/
+.gitignore
+docs/
+Dockerfile
+.dockerignore
