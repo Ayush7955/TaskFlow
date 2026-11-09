@@ -111,3 +111,4 @@ function assertCan(role, permission) {
 }
 
 module.exports = { PERMISSIONS, can, assertCan };
+

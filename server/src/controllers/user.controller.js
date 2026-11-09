@@ -23,3 +23,4 @@ exports.deactivate = asyncHandler(async (req, res) => {
   res.clearCookie('refreshToken');
   res.json({ success: true, message: 'Account deactivated' });
 });
+

@@ -27,3 +27,4 @@ async function deleteFile(providerPublicId, mimeType, provider = 'cloudinary') {
 }
 
 module.exports = { uploadFile, deleteFile };
+

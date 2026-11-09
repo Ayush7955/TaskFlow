@@ -228,3 +228,4 @@ class InviteService {
 }
 
 module.exports = { memberService: new MemberService(), inviteService: new InviteService() };
+

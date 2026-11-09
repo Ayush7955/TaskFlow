@@ -44,3 +44,4 @@ exports.acceptInvite = asyncHandler(async (req, res) => {
   const ws = await inviteService.accept(req.params.token, req.user.publicId);
   res.json({ success: true, message: 'Invite accepted', data: ws });
 });
+

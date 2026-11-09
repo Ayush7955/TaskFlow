@@ -23,3 +23,4 @@ exports.remove = asyncHandler(async (req, res) => {
   await attachmentService.delete(req.params.attachmentId, req.user.publicId);
   res.json({ success: true, message: 'Attachment deleted' });
 });
+

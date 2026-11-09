@@ -29,3 +29,4 @@ router.post('/invites', validate({ body: inviteSchema }), ctrl.invite);
 router.delete('/invites/:inviteId', ctrl.revokeInvite);
 
 module.exports = router;
+

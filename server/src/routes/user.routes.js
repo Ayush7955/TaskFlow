@@ -29,3 +29,4 @@ router.post('/me/change-password', validate({ body: changePasswordSchema }), ctr
 router.delete('/me', validate({ body: deactivateSchema }), ctrl.deactivate);
 
 module.exports = router;
+
