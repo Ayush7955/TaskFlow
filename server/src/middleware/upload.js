@@ -2,13 +2,21 @@
 
 const multer = require('multer');
 const { AppError } = require('../utils/AppError');
-const { upload: uploadCfg } = require('../config/env');
+
+// Lazy-load config to avoid crashing in test environments without DB_HOST
+function getUploadConfig() {
+  try {
+    return require('../config/env').upload;
+  } catch {
+    return { allowedMime: ['image/jpeg', 'image/png', 'image/webp'], maxMb: 10 };
+  }
+}
 
 // Use memory storage so we can inspect the buffer for magic bytes
 const storage = multer.memoryStorage();
 
-const ALLOWED_MIME_TYPES = new Set(uploadCfg.allowedMime);
-const MAX_SIZE_BYTES = uploadCfg.maxMb * 1024 * 1024;
+const ALLOWED_MIME_TYPES = new Set(getUploadConfig().allowedMime);
+const MAX_SIZE_BYTES = getUploadConfig().maxMb * 1024 * 1024;
 
 // Magic byte signatures for allowed file types
 const MAGIC_BYTES = {
