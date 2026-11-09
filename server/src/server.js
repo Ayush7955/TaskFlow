@@ -2,14 +2,14 @@ require('dotenv').config();
 
 const http = require('http');
 const app = require('./app');
-const { port, nodeEnv } = require('./config/env');
+const { port, nodeEnv, corsOrigins } = require('./config/env');
 const logger = require('./config/logger');
+const { initSocketIO } = require('./realtime');
 
 let sequelizeInstance;
 
 const getDb = () => {
   if (!sequelizeInstance) {
-    // eslint-disable-next-line global-require
     sequelizeInstance = require('./models').sequelize;
   }
   return sequelizeInstance;
@@ -23,10 +23,18 @@ const start = async () => {
     await db.authenticate();
     logger.info('✅ Database connection established');
 
+    // Initialize Socket.io on the HTTP server
+    const io = initSocketIO(server, corsOrigins);
+
+    // Initialize GraphQL (async — needs Apollo Server to start)
+    await app.initGraphQL();
+
     server.listen(port, () => {
       logger.info(`🚀 TaskFlow API running on port ${port} in ${nodeEnv} mode`);
-      logger.info(`   API: http://localhost:${port}/api/v1`);
-      logger.info(`   Health: http://localhost:${port}/api/v1/health`);
+      logger.info(`   REST API:  http://localhost:${port}/api/v1`);
+      logger.info(`   GraphQL:   http://localhost:${port}/graphql`);
+      logger.info(`   Health:    http://localhost:${port}/api/v1/health`);
+      logger.info(`   WebSocket: ws://localhost:${port}`);
     });
   } catch (err) {
     logger.error({ err }, '❌ Failed to start server');
@@ -70,4 +78,3 @@ process.on('unhandledRejection', (reason) => {
 });
 
 start();
-

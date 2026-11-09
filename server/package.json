@@ -43,6 +43,7 @@
     "sanitize-html": "^2.12.1",
     "sequelize": "^6.37.3",
     "slugify": "^1.6.6",
+    "socket.io": "^4.8.4",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
