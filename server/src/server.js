@@ -5,6 +5,9 @@ const app = require('./app');
 const { port, nodeEnv, corsOrigins } = require('./config/env');
 const logger = require('./config/logger');
 const { initSocketIO } = require('./realtime');
+const { startDueDateReminderJob } = require('./jobs/dueDateReminder.job');
+const { startOverdueScanJob } = require('./jobs/overdueScan.job');
+const { startPurgeJob } = require('./jobs/purge.job');
 
 let sequelizeInstance;
 
@@ -28,6 +31,13 @@ const start = async () => {
 
     // Initialize GraphQL (async — needs Apollo Server to start)
     await app.initGraphQL();
+
+    // Start background cron jobs (skip in test env)
+    if (nodeEnv !== 'test') {
+      startDueDateReminderJob();
+      startOverdueScanJob();
+      startPurgeJob();
+    }
 
     server.listen(port, () => {
       logger.info(`🚀 TaskFlow API running on port ${port} in ${nodeEnv} mode`);

@@ -102,3 +102,4 @@ function validateUpload(req, _res, next) {
 }
 
 module.exports = { upload, validateUpload, verifyMagicBytes };
+

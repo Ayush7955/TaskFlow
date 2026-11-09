@@ -22,3 +22,4 @@ router.post(
 router.delete('/:attachmentId', ctrl.remove);
 
 module.exports = router;
+

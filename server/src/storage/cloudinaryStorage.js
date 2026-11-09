@@ -59,3 +59,4 @@ async function remove(providerPublicId, mimeType) {
 }
 
 module.exports = { upload, remove };
+
