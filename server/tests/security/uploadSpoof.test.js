@@ -54,3 +54,4 @@ describe('Security — Magic Byte Verification', () => {
     expect(verifyMagicBytes(Buffer.from([0xff, 0xd8]), 'image/jpeg')).toBe(false);
   });
 });
+

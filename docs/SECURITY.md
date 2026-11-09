@@ -62,3 +62,4 @@ Strict-Transport-Security: max-age=15552000; includeSubDomains
 Please report security vulnerabilities to: security@taskflow.dev
 
 We follow a 90-day responsible disclosure policy.
+

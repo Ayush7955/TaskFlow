@@ -103,3 +103,4 @@ describe('Security — Auth', () => {
     expect(res.body).toHaveProperty('message');
   });
 });
+
